@@ -6,6 +6,12 @@
 #include <string.h>
 #include <stdlib.h>
 #define PORT 8080
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+
+
+	    
 
 
 int main(int argc, char const *argv[])
@@ -38,24 +44,27 @@ int main(int argc, char const *argv[])
 		printf("\nConnection Failed \n");
 		return -1;
 	}
-
-    while(1){
-	    FILE *fp;
-	    char ch;
-	    if((fp=fopen("in","r"))==NULL){
-		    printf("open file error!!\n");
-		    system("PAUSE");
-		    exit(0);
-	    }
-	    while((ch=getc(fp))!=EOF){
-		    printf("%c",ch);		   
-		    printf("%d",sizeof(ch)); 
-		    //send(sock , ch , strlen(**ch) , 0);
-		    //valread = read( sock , buffer, 1024);
-		    //printf("%s\n",buffer );
-	    }
-	    fclose(fp);	    
-	    return 0;
-    }
-    return 0;
+	const char* filename = "in";
+    	while(1){
+    		FILE *in_file = fopen(filename, "r");
+    		if (!in_file) {
+    			perror("fopen");
+    			exit(EXIT_FAILURE);
+    		}
+    		struct stat sb;
+    		if (stat(filename, &sb) == -1) {
+    			perror("stat");
+    			exit(EXIT_FAILURE);
+    		}
+    		char *contents = NULL;
+    		size_t len = 0;
+    		while (!feof(in_file)) {
+    			if (getline(&contents, &len, in_file) != -1) {
+    				printf("%s", contents);
+				send(sock,contents,strlen(contents),0);
+    			}
+    		}
+    		fclose(in_file);
+    		exit(EXIT_SUCCESS);
+    	}
 }
