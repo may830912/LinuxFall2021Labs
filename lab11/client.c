@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #define PORT 8080
 
+
 int main(int argc, char const *argv[])
 {
 	int sock = 0, valread;
@@ -47,10 +48,13 @@ int main(int argc, char const *argv[])
 		    exit(0);
 	    }
 	    while((ch=getc(fp))!=EOF){
-		    printf("%c",ch);
+		    printf("%c",ch);		   
+		    printf("%d",sizeof(ch)); 
+		    //send(sock , ch , strlen(**ch) , 0);
+		    //valread = read( sock , buffer, 1024);
+		    //printf("%s\n",buffer );
 	    }
-	    fclose(fp);
-	    system("PAUSE");
+	    fclose(fp);	    
 	    return 0;
     }
     return 0;
